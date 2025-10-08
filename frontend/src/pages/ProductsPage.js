@@ -92,29 +92,9 @@ const ProductsPage = () => {
       console.error(err);
     }
   };
-  // Update product
-const handleUpdateProduct = async (productId, updatedData) => {
-  try {
-    await api.put(`/api/products/${productId}`, updatedData);
-    fetchProducts(); // refresh products after update
-  } catch (err) {
-    console.error(err);
-    alert('Failed to update product');
-  }
-};
 
-// Delete product
-const handleDeleteProduct = async (productId) => {
-  if (!window.confirm('Are you sure you want to delete this product?')) return;
 
-  try {
-    await api.delete(`/api/products/${productId}`);
-    fetchProducts(); // refresh list after deletion
-  } catch (err) {
-    console.error(err);
-    alert('Failed to delete product');
-  }
-};
+
 
 
   // Open History Modal
