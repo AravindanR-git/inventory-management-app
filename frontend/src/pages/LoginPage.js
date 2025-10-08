@@ -43,7 +43,7 @@ const LoginPage = () => {
         <form onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="admin"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -57,7 +57,7 @@ const LoginPage = () => {
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="admin123"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
