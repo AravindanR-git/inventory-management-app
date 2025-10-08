@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import api from '../api';
 import ProductTable from '../components/ProductTable';
 
@@ -25,28 +25,22 @@ const ProductsPage = () => {
   const itemsPerPage = 10;
 
   // Fetch products
-  const fetchProducts = async () => {
-    try {
-      const res = await api.get('/products', {
-        params: {
-          name: searchName,
-          category: filterCategory
-        }
-      });
-      setProducts(res.data);
-
-      // Extract categories dynamically for filter dropdown
-      const cats = [...new Set(res.data.map(p => p.category))];
-      setCategories(cats);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+ const fetchProducts = useCallback(async () => {
+  try {
+    const res = await api.get('/products', {
+      params: { name: searchName, category: filterCategory }
+    });
+    setProducts(res.data);
+    const cats = [...new Set(res.data.map(p => p.category))];
+    setCategories(cats);
+  } catch (err) {
+    console.error(err);
+  }
+}, [searchName, filterCategory]);
   useEffect(() => {
     fetchProducts();
     setCurrentPage(1); // reset page on search/filter change
-  }, [searchName, filterCategory]);
+  }, [fetchProducts]);
 
   // Handle Add Product Modal
   const handleAddChange = (e) => {
