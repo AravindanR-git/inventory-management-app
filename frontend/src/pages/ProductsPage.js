@@ -27,7 +27,7 @@ const ProductsPage = () => {
   // Fetch products
  const fetchProducts = useCallback(async () => {
   try {
-    const res = await api.get('/products', {
+    const res = await api.get('/api/products', {
       params: { name: searchName, category: filterCategory }
     });
     setProducts(res.data);
@@ -49,7 +49,7 @@ const ProductsPage = () => {
 
   const handleAddProduct = async () => {
     try {
-      await api.post('/products', newProduct);
+      await api.post('/api/products', newProduct);
       setShowAddModal(false);
       setNewProduct({ name: '', unit: '', category: '', brand: '', stock: 0, status: 'In Stock', image: '' });
       fetchProducts();
@@ -68,7 +68,7 @@ const ProductsPage = () => {
     formData.append('csvFile', file);
 
     try {
-      await api.post('/products/import', formData, {
+      await api.post('/api/products/import', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       fetchProducts();
@@ -81,7 +81,7 @@ const ProductsPage = () => {
   // Export CSV
   const handleExportCSV = async () => {
     try {
-      const res = await api.get('/products/export', { responseType: 'blob' });
+      const res = await api.get('/api/products/export', { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -96,7 +96,7 @@ const ProductsPage = () => {
   // Open History Modal
   const handleViewHistory = async (productId, productName) => {
     try {
-      const res = await api.get(`/products/${productId}/history`);
+      const res = await api.get(`/api/products/${productId}/history`);
       setHistoryModal({ show: true, data: res.data, productName });
     } catch (err) {
       console.error(err);
