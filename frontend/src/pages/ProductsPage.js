@@ -92,6 +92,30 @@ const ProductsPage = () => {
       console.error(err);
     }
   };
+  // Update product
+const handleUpdateProduct = async (productId, updatedData) => {
+  try {
+    await api.put(`/api/products/${productId}`, updatedData);
+    fetchProducts(); // refresh products after update
+  } catch (err) {
+    console.error(err);
+    alert('Failed to update product');
+  }
+};
+
+// Delete product
+const handleDeleteProduct = async (productId) => {
+  if (!window.confirm('Are you sure you want to delete this product?')) return;
+
+  try {
+    await api.delete(`/api/products/${productId}`);
+    fetchProducts(); // refresh list after deletion
+  } catch (err) {
+    console.error(err);
+    alert('Failed to delete product');
+  }
+};
+
 
   // Open History Modal
   const handleViewHistory = async (productId, productName) => {
@@ -109,8 +133,21 @@ const ProductsPage = () => {
   const paginatedProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#f9fafb', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ marginBottom: '20px', textAlign: 'center', color: '#333' }}>Inventory Management</h1>
+    <div style={{ padding: '20px', backgroundColor: '#bfd8f1ff', minHeight: '100vh', fontFamily: 'Arial, sans-serif' }}>
+      <h1 style={{ marginBottom: '20px', textAlign: 'center',padding: '15px 25px',
+  borderRadius: '10px',
+  boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: '#333' }}>Inventory Management</h1>
+      <div 
+      style={{display:'flex',alignItems:'center',marginBottom:'20px'}}>
+      <button
+    onClick={() => {
+      localStorage.removeItem('authToken');
+      window.location.href = '/login';
+    }}
+    style={{ padding: '8px 16px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer',marginLeft: 'auto' }}
+  >
+    Logout
+      </button></div>
 
       {/* Controls */}
       <div style={{
@@ -120,10 +157,8 @@ const ProductsPage = () => {
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>
-        <button onClick={() => setShowAddModal(true)}
-          style={{ padding: '8px 16px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Add Product
-        </button>
+        <div
+        style={{display:'flex',gap:'10px',flexWrap:'wrap',marginRight:"20%",marginLeft:"10px"}}>
         <button onClick={handleExportCSV}
           style={{ padding: '8px 16px', backgroundColor: '#2196F3', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
           Export CSV
@@ -139,8 +174,20 @@ const ProductsPage = () => {
           Import CSV
           <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleImportCSV} />
         </label>
+        </div>
+
+
+
+
+
+        <button onClick={() => setShowAddModal(true)}
+          style={{ padding: '8px 16px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          Add Product
+        </button>
+       
+        
         <input type="text" placeholder="Search by name" value={searchName} onChange={(e) => setSearchName(e.target.value)}
-          style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }} />
+          style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px',maxWidth:"300px",width:"100%" }} />
         <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}
           style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }}>
           <option value="">All Categories</option>

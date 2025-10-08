@@ -21,7 +21,7 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
 
   const handleSave = async () => {
     try {
-      await api.put(`/products/${editRowId}`, formData);
+      await api.put(`/api/products/${editRowId}`, formData);
       setEditRowId(null);
       setFormData({});
       refreshProducts();
@@ -34,7 +34,7 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
-      await api.delete(`/products/${id}`);
+      await api.delete(`/api/products/${id}`);
       refreshProducts();
     } catch (err) {
       console.error(err);
@@ -42,11 +42,12 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
     }
   };
 
-  const getStockLabelStyle = (status) => {
-    if (status.toLowerCase() === 'in stock') return { color: 'green', fontWeight: 'bold' };
-    if (status.toLowerCase() === 'out of stock') return { color: 'red', fontWeight: 'bold' };
-    return {};
-  };
+  // Status based on stock number
+  const getStatusLabel = (stock) => stock > 0 ? 'In Stock' : 'Out of Stock';
+
+  const getStatusStyle = (stock) => stock > 0
+    ? { color: 'green', fontWeight: 'bold' }
+    : { color: 'red', fontWeight: 'bold' };
 
   return (
     <div style={{ overflowX: 'auto', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
@@ -69,10 +70,17 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
               <td>{editRowId === p.id ? <input name="unit" value={formData.unit} onChange={handleChange} /> : p.unit}</td>
               <td>{editRowId === p.id ? <input name="category" value={formData.category} onChange={handleChange} /> : p.category}</td>
               <td>{editRowId === p.id ? <input name="brand" value={formData.brand} onChange={handleChange} /> : p.brand}</td>
-              <td>{editRowId === p.id ? <input name="stock" type="number" value={formData.stock} onChange={handleChange} /> : p.stock}</td>
-              <td style={getStockLabelStyle(p.status)}>
-                {editRowId === p.id ? <input name="status" value={formData.status} onChange={handleChange} /> : p.status}
+
+              {/* Stock column */}
+              <td>{editRowId === p.id
+                ? <input name="stock" type="number" value={formData.stock} onChange={handleChange} />
+                : p.stock}</td>
+
+              {/* Status column */}
+              <td style={getStatusStyle(editRowId === p.id ? formData.stock : p.stock)}>
+                {getStatusLabel(editRowId === p.id ? formData.stock : p.stock)}
               </td>
+
               <td>
                 {editRowId === p.id ? (
                   <>
@@ -82,8 +90,8 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
                 ) : (
                   <>
                     <button onClick={() => handleEditClick(p)} style={actionBtnStyle}>Edit</button>
-                    <button onClick={() => handleDelete(p.id)} style={actionBtnStyle}>Delete</button>
-                    <button onClick={() => onViewHistory(p.id, p.name)} style={actionBtnStyle}>History</button>
+                    <button onClick={() => handleDelete(p.id)} style={actionBtnStyle1}>Delete</button>
+                    <button onClick={() => onViewHistory(p.id, p.name)} style={actionBtnStyle2}>History</button>
                   </>
                 )}
               </td>
@@ -93,13 +101,6 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
       </table>
 
       <style>{`
-        /* Responsive table: scroll horizontally on small screens */
-        @media (max-width: 768px) {
-          table {
-            min-width: 600px;
-          }
-        }
-
         input {
           width: 90%;
           padding: 4px;
@@ -112,7 +113,6 @@ const ProductTable = ({ products, refreshProducts, onViewHistory }) => {
   );
 };
 
-// Reusable button style
 const actionBtnStyle = {
   padding: '4px 8px',
   margin: '2px',
@@ -120,6 +120,24 @@ const actionBtnStyle = {
   border: 'none',
   cursor: 'pointer',
   backgroundColor: '#2196F3',
+  color: 'white'
+};
+const actionBtnStyle1 = {
+  padding: '4px 8px',
+  margin: '2px',
+  borderRadius: '4px',
+  border: 'none',
+  cursor: 'pointer',
+  backgroundColor: '#fc6e4bff',
+  color: 'white'
+};
+const actionBtnStyle2 = {
+  padding: '4px 8px',
+  margin: '2px',
+  borderRadius: '4px',
+  border: 'none',
+  cursor: 'pointer',
+  backgroundColor: '#48db83ff',
   color: 'white'
 };
 
