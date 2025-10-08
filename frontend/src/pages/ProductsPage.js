@@ -1,6 +1,7 @@
 import React, { useEffect, useState,useCallback } from 'react';
 import api from '../api';
 import ProductTable from '../components/ProductTable';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -17,6 +18,7 @@ const ProductsPage = () => {
     status: 'In Stock',
     image: ''
   });
+  const navigate = useNavigate();
 
   const [historyModal, setHistoryModal] = useState({ show: false, data: [], productName: '' });
 
@@ -122,7 +124,7 @@ const ProductsPage = () => {
       <button
     onClick={() => {
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
+       navigate('/login');
     }}
     style={{ padding: '8px 16px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer',marginLeft: 'auto' }}
   >
