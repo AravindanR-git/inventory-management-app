@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // your backend URL
+  baseURL: 'https://inventory-management-app-dwbe.onrender.com', // your backend URL
 });
 
 // Add JWT token to headers
